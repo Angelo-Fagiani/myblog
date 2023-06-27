@@ -1,0 +1,100 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: myBlog
+
+  data:
+    jpa:
+      repositories:
+        # 'bootstrap-mode' valori ammessi:
+        #   - DEFAULT -> I repositories vengono inizializzati all'avvio dell'applicazione
+        #   - DEFERRED -> I repositories vengono inizializzati all'avvio dell'applicazione ma in modo asincrono
+        #   - LAZY -> I repositories vengono inizializzati nel momento in cui vengono richiamati (velocizza l'avvio dell'applicazione ma aumenta i tempi di latenza alla prima chiamata)
+        bootstrap-mode: DEFAULT
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:7703/myblog?createDatabaseIfNotExist=true&autoReconnect=true&useSLL=false&useLegacyDatetimeCode=false
+    username: administrator
+    password: mariadbDocker
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        '[format_sql]': true
+        jdbc:
+        '[time_zone]': Europe/Rome
+        generate_statistics: false
+    show-sql: true
+  sql:
+    init:
+      # Qualora nel package resources ci sia un file data.sql, le istruzioni ivi contenute potrebbero essere eseguite
+      # 'mode' valori ammessi:
+      #  - never -> non vengono mai eseguite le istruzioni presenti nel file data.sql
+      #  - always -> vengono sempre eseguite le istruzioni presenti nel file data.sql. N.B. Se la propiet� spring.jpa.defer-datasource-initialization � a false, le istruzioni vengono eseguite istantaneamente; se impostato a true, le istruzioni sql vengono eseguite dopo l'avvio dell'applicazione (ovvero in maniera differita)
+      #  - embedded -> vengono sempre eseguite le istruzioni presenti nel file data.sql a patto che il database sia di tipo embedded (es. H2, Derby, etc...)
+      mode: never
+
+  jackson:
+    serialization:
+      indent-output: true
+      
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${CORSO_USER_GMAIL}
+    password: ${CORSO_PASSWORD_GMAIL}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            required: true
+
+logging:
+  level:
+    it:
+      cgmconsulting:
+        myblog: info
+    org:
+      springframework: info
+      hibernate:
+        stat: debug
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
+
+## ------------- CUSTOM SETTINGS ------------- ##
+app:
+  # JWT Settings
+  jwtSecret: ThisIsTheSecretK3y!
+  jwtExpirationInSeconds: 36000
+  # Comma separated list of allowed origins
+  cors.allowedOrigins: \*
+  # Mail sender
+  mail.sender: ${CORSO_MAIL_GMAIL}
+
+# AVATAR IMAGE
+avatar:
+  width: 150
+  height: 150
+  # in bytes
+  size: 10240
+  extensions: jpg,jpeg,gif,png
+# POST IMAGE
+post:
+  width: 600
+  height: 300
+  # in bytes
+  size: 102400
+  extensions: jpg,jpeg,gif,png
+  path: /Users/Public/myblog/images/
+
+
+
+ 
+
